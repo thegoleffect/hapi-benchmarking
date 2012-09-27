@@ -6,7 +6,6 @@ Hapi = require("hapi")
 host = process.env.HOST || 'localhost'
 port = process.env.PORT || 3000
 MAXROUTES = process.env.MAXROUTES || 100000
-
 server = new Hapi.Server(host, port)
 
 route = (p = "/") ->
