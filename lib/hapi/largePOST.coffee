@@ -1,7 +1,8 @@
 Hapi = require("hapi")
 
+host = process.env.HOST || 'localhost'
 port = process.env.PORT || 3000
-server = new Hapi.Server('localhost', port, {payload: {maxBytes: 9999999999999999}})
+server = new Hapi.Server(host, port, {payload: {maxBytes: 9999999999999999}})
 hello = {
   method: "POST",
   path: "/",
