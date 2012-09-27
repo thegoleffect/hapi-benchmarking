@@ -1,2 +1,0 @@
-hapi-benchmarking
-=================
