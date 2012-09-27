@@ -1,0 +1,39 @@
+{
+  "name": "hapi-benchmarking",
+  "description": "HTTP API Server framework",
+  "homepage": "http://hapijs.com",
+  "version": "0.0.1",
+  "author": "Van Nguyen <thegoleffect@gmail.com>",
+  "repository": "git://github.com/thegoleffect/hapi-benchmarking",
+  "main": "index",
+  "keywords": [
+    "framework",
+    "http",
+    "authentication",
+    "api",
+    "router"
+  ],
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "dependencies": {
+    "coffee-script": "~1.3.3",
+    "director": "*",
+    "express": "*",
+    "hapi": "*",
+    "restify": "*"
+  },
+  "devDependencies": {
+    "mocha": "1.x.x",
+    "should": "1.x.x",
+    "sinon": "1.3.4",
+    "chai": "1.2.x"
+  },
+  "scripts": {},
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "http://github.com/walmartlabs/hapi/raw/master/LICENSE"
+    }
+  ]
+}
