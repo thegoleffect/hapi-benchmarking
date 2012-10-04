@@ -1,3 +1,1 @@
-var coffee = require("coffee-script");
-
-// do stuff
+var index = require("./lib/index");
