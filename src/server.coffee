@@ -12,11 +12,18 @@
 #   process.send({status: 0, increment: 0}) # initiate a start time
 #   console.log("Listening on port #{port} at ", Date.now())
 # )
-
+os = require("os")
 process.on('message', (msg) ->
-  switch msg.action
+  action = msg.action
+  switch action
     when "mem"
-      process.send({action: msg.action, data: process.memoryUsage()})
+      data = process.memoryUsage()
+    when "load"
+      data = os.loadavg()
+    else
+      data = {}
+  
+  process.send({action: action, data: data}) if action
 )
 
 
