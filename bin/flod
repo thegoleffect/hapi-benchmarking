@@ -1,0 +1,51 @@
+#!/usr/bin/env coffee
+
+doc = """
+Usage: 
+  flod bench [-n REQUESTS -c CONCURRENTS --host=HOST --path=PATH]
+
+Options:
+  -h, --help                     show this help message and quit
+  -n REQUESTS                    total number of requests to send [default: 1000]
+  -c CONCURRENTS                 number of concurrent requests allowed [default: 100]
+  --host=HOST                    host to make requests to (may incl :port)[default: localhost]
+  --path=PATH                    path to make requests to [default: /]
+"""
+
+_ = require("underscore")
+{docopt} = require("docopt")
+{spawn, exec} = require("child_process")
+
+opts = docopt(doc, version: '0.0.1')
+console.log(opts)
+
+logger = (type) ->
+  return (data) ->
+    console.log("[#{type}]: " + data)
+
+bench = () ->
+  requestOpts = (opts) ->
+    return {
+      HOST: opts["--host"],
+      MAXREQUESTS: opts["-n"],
+      CONCREQUESTS: opts["-c"],
+      REQUESTPATH: opts["--path"]
+    }
+  
+  requests = spawn('coffee', ['./src/requests.coffee'], {
+    env: _.extend({}, process.env, requestOpts(opts))
+  })
+  requests.stdout.on("data", logger("STDOUT"))
+  requests.stderr.on("data", logger("STDERR"))
+  requests.on("exit", () ->
+    process.exit()
+  )
+
+
+# Do stuff
+
+if opts.bench == true
+  return bench()
+
+# if opts.server == true
+#   # do stuff

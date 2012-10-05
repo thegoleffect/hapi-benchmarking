@@ -18,8 +18,11 @@ cleanup = () ->
   ))
 
 onMessage = (m) ->
-  return cleanup() if m.status == -1
-  return rc.emit("count", {ts: Date.now()/1000>>0}) if m.status == 0
+  if m.hasOwnProperty("status")
+    return cleanup() if m.status == -1
+    return rc.emit("count", {ts: Date.now()/1000>>0, increment: m.increment || null}) if m.status == 0
+  
+  
 
 server = fork(__dirname + "/server.coffee")
 server.on("message", onMessage)
