@@ -1,12 +1,14 @@
 {exec, spawn, fork} = require("child_process")
 RequestCounter = require("./requestCounter")
 
+IS_REQUESTING = false
+
 rc = new RequestCounter()
-# t = setInterval(rc.print, 10000)
+t = setInterval(rc.print, 5000)
 
 cleanup = () ->
-  # clearInterval(t)
-  # requests.kill()
+  clearInterval(t)
+  requests.kill() if IS_REQUESTING == true
   
   console.log("performing cleanup")
   process.nextTick((() ->
@@ -22,8 +24,11 @@ onMessage = (m) ->
 server = fork(__dirname + "/server.coffee")
 server.on("message", onMessage)
 
-# requests = fork(__dirname + "/requests.coffee")
-# requests.on("message", onMessage)
+if IS_REQUESTING == true
+  requests = fork(__dirname + "/requests.coffee")
+  requests.on("message", onMessage)
+else
+  # do nothing
 
 process.on("SIGINT", () ->
   cleanup()

@@ -10,5 +10,5 @@ app.get("/", (req, res) ->
 port = process.env.PORT || 3000
 app.listen(port, () ->
   process.send({status: 0, increment: 0}) # initiate a start time
-  console.log("Listening on port #{port}")
+  console.log("Listening on port #{port} at ", Date.now())
 )

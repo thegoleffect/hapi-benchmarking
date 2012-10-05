@@ -1,6 +1,7 @@
 request = require("request")
 
-maxRequests = process.env.MAXREQUESTS || 10000
+maxRequests = process.env.MAXREQUESTS || 20000
+concurrentRequests = process.CONCREQUESTS || 100
 
 options = {
   method: "GET",
@@ -8,9 +9,20 @@ options = {
 }
 
 onComplete = (err, res, body) ->
+  throw err if err
   # do nothing
 
-for n in [0..maxRequests]
-  request(options, onComplete)
+n = 0
+while n <= maxRequests 
+  for k in [0..concurrentRequests]
+    console.log(n)
+    n++
+    request(options, onComplete)
 
-process.send({status: -1})
+process.send({status: -1}) if process.send
+
+# for n in [0..maxRequests]
+#   console.log(n)
+#   request(options, onComplete)
+
+# process.send({status: -1})
