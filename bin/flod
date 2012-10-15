@@ -2,13 +2,14 @@
 
 doc = """
 Usage: 
-  flod bench [-n REQUESTS -c CONCURRENTS --host=HOST --path=PATH]
+  flod bench [options]
 
 Options:
   -h, --help                     show this help message and quit
   -n REQUESTS                    total number of requests to send [default: 1000]
   -c CONCURRENTS                 number of concurrent requests allowed [default: 100]
   --host=HOST                    host to make requests to (may incl :port)[default: localhost]
+  --admin=ADMINHOST              host to use for admin requests (if different from --host)[default: localhost:8000]
   --path=PATH                    path to make requests to [default: /]
 """
 
@@ -32,6 +33,7 @@ bench = () ->
       REQUESTPATH: opts["--path"]
     }
   
+  # TODO: use __dirname + "../src/requests.coffee", make sure it works in npm install -g mode
   requests = spawn('coffee', ['./src/requests.coffee'], {
     env: _.extend({}, process.env, requestOpts(opts))
   })

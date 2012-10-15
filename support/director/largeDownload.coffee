@@ -1,14 +1,19 @@
 http = require("http")
 director = require("director")
 
-helloWorld = () ->
-  this.res.writeHead(200, {'Content-Type': 'text/plain'})
-  process.send({status: 0}) if process.send
-  this.res.end("Hello World.")
+download = () ->
+  self = this
+  
+  fs.readFile(filepath, (err, data) ->
+    throw err if err
+    self.res.writeHead(200, {'Content-Type': 'text/plain'})
+    process.send({status: 0}) if process.send
+    self.res.send(data.toString())
+  )
 
 router = new director.http.Router({
   "/": {
-    get: helloWorld
+    get: download
   }
 })
 

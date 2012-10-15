@@ -6,11 +6,7 @@ helloWorld = () ->
   process.send({status: 0}) if process.send
   this.res.end("Hello World.")
 
-router = new director.http.Router({
-  "/": {
-    get: helloWorld
-  }
-})
+router = new director.http.Router()
 
 server = http.createServer((req, res) ->
   router.dispatch(req, res, (err) ->
@@ -19,6 +15,14 @@ server = http.createServer((req, res) ->
       res.end()
   )
 )
+
+MAXROUTES = process.env.MAXROUTES || 100000
+
+for i in [0..MAXROUTES]
+  r = "/#{i}"
+  router.get(r, helloWorld)
+
+
 
 process.send({status: 0, increment: 0}) if process.send
 port = process.env.PORT || 3000
