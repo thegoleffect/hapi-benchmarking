@@ -15,6 +15,7 @@ class Master extends EventEmitter
   _defaultOptions: {
     host: "localhost",
     filePath: "./servers/",
+    logPath: "../log/",
     server: "hapi",
     test: "helloworld",
     metricInterval: 5000
@@ -59,8 +60,13 @@ class Master extends EventEmitter
     
     return benchmark
   
+  backupFilename: () ->
+    return "bench-" + @now() + ".json"
+  
   backupToFile: (contents) ->
-    backupFilename = path.join(__dirname, "../support/", "bench-" + @now() + ".json")
+    return if contents == null
+    backupFilename = path.join(__dirname, @options.logPath, @backupFilename())
+    console.log(backupFilename)
     fs.writeFileSync(backupFilename, JSON.stringify(contents))
   
   statistics: (data) ->
