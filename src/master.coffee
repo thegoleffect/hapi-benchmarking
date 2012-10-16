@@ -43,7 +43,7 @@ class Master extends EventEmitter
   
   unregister: (id = null) ->
     return Hapi.Error.badRequest("No such benchmark found by that id (#{id})") if id == null or (@benchmark and @benchmark.id and @benchmark.id != id)
-    benchmark = finalizeData()
+    benchmark = @finalizeData()
     stats = @statistics(benchmark)
     return stats
   
@@ -51,21 +51,26 @@ class Master extends EventEmitter
     benchmark = @benchmark
     @benchmark = null
     # TODO: write backup of benchmark data to disk
-    fs.writeFileSync(JSON.stringify(benchmark))
+    backupFilename = path.join(__dirname, "../support/", @now() + ".coffee")
+    fs.writeFileSync(backupFilename, JSON.stringify(benchmark))
     
     return benchmark
   
   statistics: (data) ->
     console.log(data)
-    return {} # TODO:
+    return data # TODO:
   
   aggregate: (action, timestamp, increment = 1) ->
     return null if @benchmark == null
     
+    inc = parseInt(increment)
+    throw "#{increment} is not a valid increment value for @aggregate" if isNaN(inc)
+    
     if not @benchmark.hasOwnProperty(action)
       @benchmark[action] = {} 
+    if not @benchmark[action].hasOwnProperty(timestamp)
       @benchmark[action][timestamp] = 0
-    @benchmark[action][timestamp] += increment
+    @benchmark[action][timestamp] += inc
   
   record: (action, timestamp, data = true) ->
     return null if @benchmark == null
@@ -89,12 +94,13 @@ class Master extends EventEmitter
   
   cleanup: (err = null) =>
     throw err if err
+    
+    clearInterval(@metricsTimer)
     @stop()
     @stopAdmin()
     process.nextTick(() ->
       process.exit()
     )
-    # clear timers, etc
   
   pollMetrics: () =>
     if @server and @server.send
