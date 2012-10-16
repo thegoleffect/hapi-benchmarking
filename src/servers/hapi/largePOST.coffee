@@ -9,6 +9,9 @@ hello = {
   method: "POST",
   path: "/",
   config: {
+    query: {
+      id: Hapi.Types.String()
+    },
     handler: (req) ->
       req.reply(req.raw.req.headers["content-length"])
       Minion.logRequest()

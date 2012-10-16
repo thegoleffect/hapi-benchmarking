@@ -1,0 +1,17 @@
+#!/usr/bin/env coffee
+
+doc = """
+Usage: 
+  flod-server [options]
+
+Options:
+  -h, --help                     show this help message and quit
+  --version                      show version
+"""
+
+_ = require("underscore")
+{docopt} = require("docopt")
+{spawn, exec} = require("child_process")
+
+opts = docopt(doc, {help: true, version: require("../package.json").version})
+console.log(opts)

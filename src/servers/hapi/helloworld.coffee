@@ -12,9 +12,12 @@ hello = {
   method: "GET",
   path: "/",
   config: {
+    query: {
+      id: Hapi.Types.String()
+    },
     handler: (req) ->
       req.reply("Hello World.")
-      Minion.logRequest()
+      Minion.logRequest(req.query)
   }
 }
 

@@ -12,6 +12,9 @@ download = {
   method: "GET",
   path: "/",
   config: {
+    query: {
+      id: Hapi.Types.String()
+    },
     handler: (req) ->
       fs.readFile(filepath, (err, data) ->
         throw err if err

@@ -15,6 +15,9 @@ route = (p = "/") ->
     method: "GET",
     path: p,
     config: {
+      query: {
+        id: Hapi.Types.String()
+      },
       handler: (req) ->
         req.reply("Hello World.")
         Minion.logRequest()

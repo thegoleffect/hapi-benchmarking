@@ -2,52 +2,63 @@
 
 doc = """
 Usage: 
-  flod bench [options]
+  flod [options]
 
 Options:
   -h, --help                     show this help message and quit
+  -v, --verbose                  verbose mode
+  --version                      show version
   -n REQUESTS                    total number of requests to send [default: 1000]
   -c CONCURRENTS                 number of concurrent requests allowed [default: 100]
   --host=HOST                    host to make requests to (may incl :port)[default: localhost]
   --admin=ADMINHOST              host to use for admin requests (if different from --host)[default: localhost:8000]
-  --path=PATH                    path to make requests to [default: /]
+  --test=RUNNER                  test runner fileset (server, client) to use
+  --server=MODULE                server module to perform test on
 """
 
 _ = require("underscore")
 {docopt} = require("docopt")
 {spawn, exec} = require("child_process")
+{docopt2obj} = require("../src/shared")
 
-opts = docopt(doc, version: '0.0.1')
-console.log(opts)
+opts = docopt(doc, {help: true, version: require("../package.json").version})
+console.log(opts) if opts["--verbose"]
 
-logger = (type) ->
-  return (data) ->
-    console.log("[#{type}]: " + data)
+Requester = require("../src/requester")
 
-bench = () ->
-  requestOpts = (opts) ->
-    return {
-      HOST: opts["--host"],
-      MAXREQUESTS: opts["-n"],
-      CONCREQUESTS: opts["-c"],
-      REQUESTPATH: opts["--path"]
-    }
+settings = docopt2obj(opts)
+r = new Requester(settings)
+r.start()
+
+# logger = (type) ->
+#   return (data) ->
+#     console.log("[#{type}]: " + data)
+
+# bench = () ->
+#   requestOpts = (opts) ->
+#     return {
+#       HOST: opts["--host"],
+#       MAXREQUESTS: opts["-n"],
+#       CONCREQUESTS: opts["-c"],
+#       REQUESTPATH: opts["--path"]
+#     }
   
-  # TODO: use __dirname + "../src/requests.coffee", make sure it works in npm install -g mode
-  requests = spawn('coffee', ['./src/requests.coffee'], {
-    env: _.extend({}, process.env, requestOpts(opts))
-  })
-  requests.stdout.on("data", logger("STDOUT"))
-  requests.stderr.on("data", logger("STDERR"))
-  requests.on("exit", () ->
-    process.exit()
-  )
+#   # TODO: use __dirname + "../src/requests.coffee", make sure it works in npm install -g mode
+#   requests = spawn('coffee', ['./src/requests.coffee'], {
+#     env: _.extend({}, process.env, requestOpts(opts))
+#   })
+#   requests.stdout.on("data", logger("STDOUT"))
+#   requests.stderr.on("data", logger("STDERR"))
+#   requests.on("exit", () ->
+#     process.exit()
+#   )
 
 
-# Do stuff
+# # Do stuff
 
-if opts.bench == true
-  return bench()
+# if opts.bench == true
+  # Requester = require()
+  # return bench()
 
-# if opts.server == true
-#   # do stuff
+# # if opts.server == true
+# #   # do stuff

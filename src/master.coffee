@@ -74,17 +74,18 @@ class Master extends EventEmitter
     # TODO: merge from requests.coffee
     return data 
   
-  aggregate: (action, timestamp, increment = 1) ->
+  aggregate: (action, timestamp, id) ->
     return null if @benchmark == null
+    return null if @benchmark.id != id
     
-    inc = parseInt(increment)
-    throw "#{increment} is not a valid increment value for @aggregate" if isNaN(inc)
+    # inc = parseInt(increment)
+    # throw "#{increment} is not a valid increment value for @aggregate" if isNaN(inc)
     
     if not @benchmark.hasOwnProperty(action)
       @benchmark[action] = {} 
     if not @benchmark[action].hasOwnProperty(timestamp)
       @benchmark[action][timestamp] = 0
-    @benchmark[action][timestamp] += inc
+    @benchmark[action][timestamp] += 1
   
   record: (action, timestamp, data = true) ->
     return null if @benchmark == null
