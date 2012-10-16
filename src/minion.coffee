@@ -20,4 +20,7 @@ class Minion
   logRequest: () ->
     @log("request", 1)
   
+  started: () ->
+    @log("started", 1)
+  
 module.exports = Minion

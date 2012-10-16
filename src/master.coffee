@@ -10,12 +10,14 @@ class Master extends EventEmitter
   constructor: (@port = 8080, options = {}) ->
     @init(options)
     @startAdmin()
+    @start(options)
   
   _defaultOptions: {
     host: "localhost",
     filePath: "../support/",
     server: "hapi",
-    serverFile: "helloworld"
+    test: "helloworld",
+    metricInterval: 5000
   }
   
   init: (options) ->
@@ -86,10 +88,16 @@ class Master extends EventEmitter
     )
     # clear timers, etc
   
+  pollMetrics: () =>
+    if @server and @server.send
+      @server.send({action: "mem"})
+      @server.send({action: "load"})
+  
   start: (settings) ->
     @stop() if @server != null
     @server = fork(path.join(@options.filePath, settings.server, settings.test))
     @server.on('message', @onMessage)
+    @metricsTimer = setInterval(@pollMetrics, @options.metricInterval)
   
   stop: () ->
     @record("ended", @now())

@@ -14,10 +14,12 @@ hello = {
   config: {
     handler: (req) ->
       req.reply("Hello World.")
-      process.send({action: "request"})
+      # process.send({action: "request"})
+      Minion.logRequest()
   }
 }
 
 server.addRoute(hello)
-process.send({action: "start"})
+# process.send({action: "start"})
+Minion.started()
 server.start()
