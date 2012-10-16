@@ -1,4 +1,4 @@
-Master = require("./master.coffee")
+Master = require("./master")
 
 options = {}
 m = new Master(process.env.PORT || null, options)

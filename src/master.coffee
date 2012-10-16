@@ -121,7 +121,7 @@ class Master extends EventEmitter
     @stop() if @server != null
     return Hapi.Error.badRequest("Cannot (re)start server while benchmark is in progress") if @benchmark != null
     
-    serverFile = path.join(__dirname, settings.filePath, settings.server, settings.test)
+    serverFile = path.join(__dirname, settings.filePath, settings.server, settings.test + ".coffee")
     @server = fork(serverFile)
     @server.on('message', @onMessage)
     @metricsTimer = setInterval(@pollMetrics, @options.metricInterval)
