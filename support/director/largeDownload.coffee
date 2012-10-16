@@ -1,5 +1,7 @@
 http = require("http")
 director = require("director")
+CMinion = require("../../src/minion")
+Minion = new CMinion()
 
 download = () ->
   self = this
@@ -7,8 +9,8 @@ download = () ->
   fs.readFile(filepath, (err, data) ->
     throw err if err
     self.res.writeHead(200, {'Content-Type': 'text/plain'})
-    process.send({status: 0}) if process.send
     self.res.send(data.toString())
+    Minion.logRequest()
   )
 
 router = new director.http.Router({
@@ -25,6 +27,6 @@ server = http.createServer((req, res) ->
   )
 )
 
-process.send({status: 0, increment: 0}) if process.send
+Minion.started()
 port = process.env.PORT || 3000
 server.listen(port)

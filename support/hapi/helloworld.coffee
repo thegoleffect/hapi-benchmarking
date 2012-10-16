@@ -3,10 +3,9 @@ os = require("os")
 
 Hapi = require("hapi")
 CMinion = require("../../src/minion")
-
+Minion = new CMinion()
 host = process.env.HOST || 'localhost'
 port = process.env.PORT || 3000
-Minion = new CMinion()
 
 server = new Hapi.Server(host, port)
 hello = {

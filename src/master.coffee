@@ -50,7 +50,8 @@ class Master extends EventEmitter
   finalizeData: () ->
     benchmark = @benchmark
     @benchmark = null
-    # TODO: write backup of benchmark data to disk
+    
+    # write backup of benchmark data to disk
     backupFilename = path.join(__dirname, "../support/", @now() + ".coffee")
     fs.writeFileSync(backupFilename, JSON.stringify(benchmark))
     
@@ -109,6 +110,8 @@ class Master extends EventEmitter
   
   start: (settings) ->
     @stop() if @server != null
+    return Hapi.Error.badRequest("Cannot (re)start server while benchmark is in progress") if @benchmark != null
+    
     serverFile = path.join(__dirname, settings.filePath, settings.server, settings.test)
     @server = fork(serverFile)
     @server.on('message', @onMessage)

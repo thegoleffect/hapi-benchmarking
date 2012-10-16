@@ -1,4 +1,6 @@
 restify = require("restify")
+CMinion = require("../../src/minion")
+Minion = new CMinion()
 
 server = restify.createServer()
 port = process.env.PORT || 3000
@@ -8,8 +10,10 @@ for i in [0..MAXROUTES]
   r = "/#{i}"
   server.get(r, (req, res) ->
     res.send("Hello World.")
+    Minion.logRequest()
   )
 
+Minion.started()
 server.listen(port, () ->
   console.log("Listening on port #{port}")
 )

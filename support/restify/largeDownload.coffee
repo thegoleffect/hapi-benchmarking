@@ -1,5 +1,7 @@
 restify = require("restify")
 fs = require("fs")
+CMinion = require("../../src/minion")
+Minion = new CMinion()
 
 filepath = "/usr/share/dict/words"
 server = restify.createServer()
@@ -7,10 +9,12 @@ server.get("/", (req, res) ->
   fs.readFile(filepath, (err, data) ->
     throw err if err
     res.send(data.toString())
+    Minion.logRequest()
   )
 )
 
 port = process.env.PORT || 3000
+Minion.started()
 server.listen(port, () ->
   console.log("Listening on port #{port}")
 )

@@ -1,5 +1,7 @@
 http = require("http")
 director = require("director")
+CMinion = require("../../src/minion")
+Minion = new CMinion()
 
 router = new director.http.Router()
 
@@ -19,4 +21,9 @@ server = http.createServer((req, res) ->
 router.post('/', () ->
   this.res.writeHead(200, {"Content-Type": "text/plain"})
   this.res.end(this.req.headers["content-length"])
+  Minion.logRequest()
 )
+
+Minion.started()
+port = process.env.PORT || 3000
+server.listen(port)
