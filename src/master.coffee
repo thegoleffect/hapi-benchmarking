@@ -23,6 +23,7 @@ class Master extends EventEmitter
   init: (options) ->
     @options = @_opts(options)
     @benchmark = null
+    @benchmarkStarted = null
     process.on("SIGINT", @cleanup)
     process.on("uncaughtException", @cleanup)
   
@@ -30,8 +31,8 @@ class Master extends EventEmitter
     options.port = @port
     @options = _.extend({}, @_defaultOptions, options)
   
-  register: (query, id = null) ->
-    id = id || uuid.v4()
+  register: (query) ->
+    id = query.id || uuid.v4()
     if @benchmark != null
       return Hapi.Error.badRequest("Benchmark in progress, please wait until finished")
     
@@ -39,6 +40,9 @@ class Master extends EventEmitter
       id: id,
       query: query
     }
+    if @benchmarkStarted != null
+      @benchmark["started"] = @benchmarkStarted 
+      @benchmarkStarted = null
     return @benchmark
   
   unregister: (id = null) ->
@@ -51,15 +55,18 @@ class Master extends EventEmitter
     benchmark = @benchmark
     @benchmark = null
     
-    # write backup of benchmark data to disk
-    backupFilename = path.join(__dirname, "../support/", @now() + ".coffee")
-    fs.writeFileSync(backupFilename, JSON.stringify(benchmark))
+    @backupToFile(benchmark)
     
     return benchmark
   
+  backupToFile: (contents) ->
+    backupFilename = path.join(__dirname, "../support/", "bench-" + @now() + ".json")
+    fs.writeFileSync(backupFilename, JSON.stringify(contents))
+  
   statistics: (data) ->
     console.log(data)
-    return data # TODO:
+    # TODO: merge from requests.coffee
+    return data 
   
   aggregate: (action, timestamp, increment = 1) ->
     return null if @benchmark == null
@@ -88,10 +95,12 @@ class Master extends EventEmitter
         @aggregate(m.action, ts, m.data)
       when "mem", "load"
         @record(m.action, ts, m.data)
-      when "started", "ended"
+      when "started"
+        @benchmarkStarted = ts
+      when "ended"
         @record(m.action, ts)
       else
-        console.log("unspecified action: #{m.action}")
+        throw "unspecified action: #{m.action}"
   
   cleanup: (err = null) =>
     throw err if err
@@ -151,12 +160,12 @@ class Master extends EventEmitter
       path: "/bench/start",
       config: {
         query: {
-          n: Hapi.Types.Number().required(),
+          n: Hapi.Types.Number(),
           c: Hapi.Types.Number(),
           id: Hapi.Types.String()
         },
         handler: (req) ->
-          id = self.register(req.query, req.id || null)
+          id = self.register(req.query)
           req.reply(id)
       }
     }
