@@ -18,7 +18,8 @@ class Master extends EventEmitter
     logPath: "../logs/",
     server: "hapi",
     test: "helloworld",
-    metricInterval: 5000
+    metricInterval: 5000,
+    debug: true
   }
   
   init: (options) ->
@@ -127,11 +128,14 @@ class Master extends EventEmitter
   start: (settings) ->
     @stop() if @server != null
     return Hapi.Error.badRequest("Cannot (re)start server while benchmark is in progress") if @benchmark != null
+    settings = _.extend({}, @options, settings)
     
     serverFile = path.join(__dirname, settings.filePath, settings.server, settings.test + ".coffee")
+    console.log(serverFile) if @options.debug
     @server = fork(serverFile)
     @server.on('message', @onMessage)
     @metricsTimer = setInterval(@pollMetrics, @options.metricInterval)
+    return {}
   
   stop: () ->
     @record("ended", @now())

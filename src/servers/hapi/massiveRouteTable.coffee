@@ -20,7 +20,7 @@ route = (p = "/") ->
       },
       handler: (req) ->
         req.reply("Hello World.")
-        Minion.logRequest()
+        Minion.logRequest(req.query)
     }
   }
 

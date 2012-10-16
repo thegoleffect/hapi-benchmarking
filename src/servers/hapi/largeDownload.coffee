@@ -19,7 +19,7 @@ download = {
       fs.readFile(filepath, (err, data) ->
         throw err if err
         req.reply(data.toString())
-        Minion.logRequest()
+        Minion.logRequest(req.query)
       )
       
   }

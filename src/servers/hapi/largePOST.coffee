@@ -14,7 +14,7 @@ hello = {
     },
     handler: (req) ->
       req.reply(req.raw.req.headers["content-length"])
-      Minion.logRequest()
+      Minion.logRequest(req.query)
   }
 }
 

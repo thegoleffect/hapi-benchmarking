@@ -18,8 +18,8 @@ class Minion
   log: (action, data) ->
     process.send({action: action, data: data}) if process.send
   
-  logRequest: (id) ->
-    @log("request", id)
+  logRequest: (query) ->
+    @log("request", query.id)
   
   started: () ->
     @log("started", 1)

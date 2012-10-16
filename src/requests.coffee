@@ -14,6 +14,8 @@ http.globalAgent.maxSockets = concurrentRequests
 baseOptions = {
   host: process.env.HOST,
   port: 80
+  method: "GET",
+  path: requestPath
 }
 
 requestOptions = {
