@@ -1,5 +1,5 @@
 restify = require("restify")
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 
 server = restify.createServer()

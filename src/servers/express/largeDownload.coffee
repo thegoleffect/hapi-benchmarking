@@ -1,7 +1,7 @@
 express = require("express")
 fs = require("fs")
 filepath = "/usr/share/dict/words"
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 
 app = express()

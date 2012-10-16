@@ -3,7 +3,7 @@ Hapi = require("hapi")
 
 host = process.env.HOST || 'localhost'
 port = process.env.PORT || 3000
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 filepath = "/usr/share/dict/words"
 server = new Hapi.Server(host, port)

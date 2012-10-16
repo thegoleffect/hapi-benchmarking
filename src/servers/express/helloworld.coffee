@@ -1,11 +1,11 @@
 express = require("express")
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 
 app = express()
 app.get("/", (req, res) ->
   res.send("Hello World.")
-      Minion.logRequest()
+  Minion.logRequest()
 )
 
 port = process.env.PORT || 3000

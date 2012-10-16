@@ -1,6 +1,6 @@
 restify = require("restify")
 fs = require("fs")
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 
 filepath = "/usr/share/dict/words"

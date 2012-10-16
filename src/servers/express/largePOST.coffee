@@ -1,5 +1,5 @@
 express = require("express")
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 
 app = express()

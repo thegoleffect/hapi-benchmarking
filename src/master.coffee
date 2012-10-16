@@ -14,7 +14,7 @@ class Master extends EventEmitter
   
   _defaultOptions: {
     host: "localhost",
-    filePath: "../support/",
+    filePath: "./servers/",
     server: "hapi",
     test: "helloworld",
     metricInterval: 5000

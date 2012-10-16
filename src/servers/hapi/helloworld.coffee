@@ -2,7 +2,7 @@ dns = require("dns")
 os = require("os")
 
 Hapi = require("hapi")
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 host = process.env.HOST || 'localhost'
 port = process.env.PORT || 3000

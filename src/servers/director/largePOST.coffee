@@ -1,6 +1,6 @@
 http = require("http")
 director = require("director")
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 
 router = new director.http.Router()

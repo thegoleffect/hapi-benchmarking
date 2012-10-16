@@ -2,7 +2,7 @@ Hapi = require("hapi")
 
 host = process.env.HOST || 'localhost'
 port = process.env.PORT || 3000
-CMinion = require("../../src/minion")
+CMinion = require("../../minion")
 Minion = new CMinion()
 server = new Hapi.Server(host, port, {payload: {maxBytes: 9999999999999999}})
 hello = {
