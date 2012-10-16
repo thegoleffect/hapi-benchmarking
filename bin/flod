@@ -7,11 +7,12 @@ Usage:
 Options:
   -h, --help                     show this help message and quit
   -v, --verbose                  verbose mode
+  --debug                   debug mode
   --version                      show version
   -n REQUESTS                    total number of requests to send [default: 1000]
   -c CONCURRENTS                 number of concurrent requests allowed [default: 100]
-  --host=HOST                    host to make requests to (may incl :port)[default: localhost]
-  --admin=ADMINHOST              host to use for admin requests (if different from --host)[default: localhost:8000]
+  --host=HOST                    host to make requests to (may incl :port)[default: http://localhost]
+  --admin=ADMINHOST              host to use for admin requests (if different from --host)[default: http://localhost:8000]
   --test=RUNNER                  test runner fileset (server, client) to use
   --server=MODULE                server module to perform test on
 """
@@ -19,15 +20,12 @@ Options:
 _ = require("underscore")
 {docopt} = require("docopt")
 {spawn, exec} = require("child_process")
-{docopt2obj} = require("../src/shared")
 
 opts = docopt(doc, {help: true, version: require("../package.json").version})
-console.log(opts) if opts["--verbose"]
+console.log("options", opts) if opts["--verbose"]
 
-Requester = require("../src/requester")
-
-settings = docopt2obj(opts)
-r = new Requester(settings)
+Requester = require("../lib/requester")
+r = new Requester(opts)
 r.start()
 
 # logger = (type) ->

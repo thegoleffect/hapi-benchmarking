@@ -1,7 +1,5 @@
-module.exports = {}
-
-module.exports.docopt2obj = (opts) ->
-  o = {
+docopt2obj = (opts) ->
+  obj = {
     requests: opts["-n"],
     concurrents: opts["-c"],
     host: opts["--host"],
@@ -10,4 +8,7 @@ module.exports.docopt2obj = (opts) ->
     test: opts["--test"],
     verbose: opts["--verbose"]
   }
-  return o
+
+module.exports = {}
+module.exports.docopt2obj = docopt2obj
+

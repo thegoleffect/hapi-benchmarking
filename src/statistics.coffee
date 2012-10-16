@@ -1,7 +1,4 @@
 class Statistics
-  constructor: () ->
-    # ...
-    
   min: (arr) -> return Math.min.apply(this, latency)
   
   max: (arr) -> return Math.max.apply(this, latency)
