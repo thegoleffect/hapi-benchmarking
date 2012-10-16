@@ -10,7 +10,7 @@ class Master extends EventEmitter
   constructor: (@port = 8080, options = {}) ->
     @init(options)
     @startAdmin()
-    @start(options)
+    @start(@options)
   
   _defaultOptions: {
     host: "localhost",
@@ -24,6 +24,7 @@ class Master extends EventEmitter
     @options = @_opts(options)
     @benchmark = null
     process.on("SIGINT", @cleanup)
+    process.on("uncaughtException", @cleanup)
   
   _opts: (options) ->
     options.port = @port
@@ -50,6 +51,8 @@ class Master extends EventEmitter
     benchmark = @benchmark
     @benchmark = null
     # TODO: write backup of benchmark data to disk
+    fs.writeFileSync(JSON.stringify(benchmark))
+    
     return benchmark
   
   statistics: (data) ->
@@ -57,6 +60,8 @@ class Master extends EventEmitter
     return {} # TODO:
   
   aggregate: (action, timestamp, increment = 1) ->
+    return null if @benchmark == null
+    
     if not @benchmark.hasOwnProperty(action)
       @benchmark[action] = {} 
       @benchmark[action][timestamp] = 0
@@ -64,6 +69,7 @@ class Master extends EventEmitter
   
   record: (action, timestamp, data = true) ->
     return null if @benchmark == null
+    
     @benchmark[action] = {} if not @benchmark.hasOwnProperty(action)
     @benchmark[action][timestamp] = data
     
@@ -81,8 +87,10 @@ class Master extends EventEmitter
       else
         console.log("unspecified action: #{m.action}")
   
-  cleanup: () =>
+  cleanup: (err = null) =>
+    throw err if err
     @stop()
+    @stopAdmin()
     process.nextTick(() ->
       process.exit()
     )
@@ -95,7 +103,8 @@ class Master extends EventEmitter
   
   start: (settings) ->
     @stop() if @server != null
-    @server = fork(path.join(@options.filePath, settings.server, settings.test))
+    serverFile = path.join(__dirname, settings.filePath, settings.server, settings.test)
+    @server = fork(serverFile)
     @server.on('message', @onMessage)
     @metricsTimer = setInterval(@pollMetrics, @options.metricInterval)
   
@@ -106,7 +115,10 @@ class Master extends EventEmitter
       @server.kill()
       @server = null
     return @finalizeData()
-    
+  
+  stopAdmin: () ->
+    @admin.stop()
+  
   startAdmin: () ->
     self = this
     
