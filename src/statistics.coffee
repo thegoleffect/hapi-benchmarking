@@ -1,7 +1,7 @@
 class Statistics
-  min: (arr) -> return Math.min.apply(this, latency)
+  min: (arr) -> return Math.min.apply(this, arr)
   
-  max: (arr) -> return Math.max.apply(this, latency)
+  max: (arr) -> return Math.max.apply(this, arr)
   
   mean: (arr) ->
     return arr.reduce((a,b) -> return a + b) / arr.length
@@ -12,11 +12,11 @@ class Statistics
     if sortedArr.length % 2 == 1
       return sortedArr[midpt]
     else
-      return mean([sortedArr[midpt - 1], sortedArr[midpt]])
+      return @mean([sortedArr[midpt - 1], sortedArr[midpt]])
 
   stdDev: (a) ->
     arr = a.slice(0)
-    arrMean = mean(arr)
+    arrMean = @mean(arr)
     differences = arr.map((d) -> return +(Math.pow(d - arrMean, 2)).toFixed(2))
     sumDiff = differences.reduce((a,b)-> return a+b)
     variance = (1 / (arr.length - 1)) * sumDiff

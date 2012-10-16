@@ -163,6 +163,20 @@ class Requester extends Statistics
       callback(err, data)
     )
   
+  printLatency: () ->
+    min = @min(@latency)
+    max = @max(@latency)
+    lmean = @mean(@latency)
+    lmedian = @median(@latency)
+    lstddev = @stdDev(@latency)
+    
+    console.log("Latencies:")
+    console.log("\tmin =", min)
+    console.log("\tmax =", max)
+    console.log("\tmean =", lmean)
+    console.log("\tmedian =", lmedian)
+    console.log("\tstd dev =", lstddev)
+  
   start: () ->
     self = this
     console.log("start()") if self.options.debug
@@ -173,10 +187,11 @@ class Requester extends Statistics
       self.startBench((err, id) ->
         throw err if err
         
-        console.log("startBench returned with id = #{id}") if self.options.debug
         self.options.id = id
+        console.log("startBench returned with id = #{id}") if self.options.debug
         console.log("benching", self.options.host+"/?id=" + self.options.id) if self.options.debug
         console.log("n=#{self.options.requests}, c=#{self.options.concurrents}")
+        
         self.bench(0, self.options.concurrents, self.options.requests, (err) ->
           throw err if err
           
@@ -186,8 +201,8 @@ class Requester extends Statistics
             console.log("finished bench")
             console.log(response)
             # print statistics?
-            console.log(self.requestCounter, self.responseCounter, self.options.requests)
-            # console.log(self.latency)
+            console.log("completed #{self.requestCounter} out of #{self.options.requests}")
+            self.printLatency()
             
             # backup to file
           )
